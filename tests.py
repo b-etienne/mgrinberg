@@ -3,7 +3,8 @@ import unittest
 
 from config import basedir
 from app import app, db
-from app.models import User
+from app.models import User, Posts
+from datetime import datetime, timedelta
 
 
 class TestCase(unittest.TestCase):
@@ -61,6 +62,59 @@ class TestCase(unittest.TestCase):
 		assert(u1.is_following(u2) is False)
 		assert(u1.follows.count()==0)
 		assert(u2.followers.count()==0)
+
+
+	def test_follow_posts(self):
+		# Users
+		u1 = User(pseudo="john", email="john@xxx.fr")
+		u2 = User(pseudo="marie", email="marie@yyy.fr")
+		u3 = User(pseudo="david", email="david@xxx.fr")
+		u4 = User(pseudo="bob", email="bob@yyy.fr")
+		db.session.add(u1)
+		db.session.add(u2)
+		db.session.add(u3)
+		db.session.add(u4)
+
+		# Posts
+		now = datetime.utcnow()
+		p1 = Posts(body="Post from John", author=u1.iid, datestamp=now+timedelta(1))
+		p2 = Posts(body="Post from Marie", author=u2.iid, datestamp=now+timedelta(2))
+		p3 = Posts(body="Post from David", author=u3.iid, datestamp=now+timedelta(3))
+		p4 = Posts(body="Post from Bob", author=u4.iid, datestamp=now+timedelta(4))
+		db.session.add(p1)
+		db.session.add(p2)
+		db.session.add(p3)
+		db.session.add(p4)
+		db.session.commit()
+
+		# Followers
+		u1 = u1.follow(u1)
+		u1 = u1.follow(u2)
+		u1 = u1.follow(u4)
+		u2.follow(u2)
+		u2.follow(u4)
+		u3.follow(u3)
+		u3.follow(u4)
+		u4.follow(u4)
+		db.session.add(u1)
+		db.session.add(u2)
+		db.session.add(u3)
+		db.session.add(u4)
+		db.session.commit()
+
+		print(Posts.query.all())
+
+		# Check the number of followed posts
+		f1 = u1.followed_posts().all()
+		f2 = u2.followed_posts().all()
+		f3 = u3.followed_posts().all()
+		f4 = u4.followed_posts().all()
+		print(f1)
+		assert f1 == [p4, p2, p1]
+		assert f2 == [p4, p2]
+		assert f3 == [p4, p3]
+		assert f4 == [p4]
+
 
 
 

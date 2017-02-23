@@ -77,8 +77,8 @@ class User(db.Model):
 
 	def followed_posts(self):
 		s = Posts.query.join(followers, (followers.c.follows_id==Posts.user_id))
-		s = s.filter(followers.c.follower_id=self.iid)
-		s = s.order_by(Posts.timestamp.desc())
+		s = s.filter(followers.c.follower_id==self.iid)
+		s = s.order_by(Posts.datestamp.desc())
 		return(s)
 
 
@@ -87,6 +87,11 @@ class Posts(db.Model):
 	body = db.Column(db.String(140))
 	datestamp = db.Column(db.DateTime)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.iid'))
+
+	def __init__(self, body, author, datestamp):
+		self.body = body
+		self.user_id = author
+		self.datestamp = datestamp
 
 	def __repr__(self):
 		return('<Post {}>'.format(self.body))
