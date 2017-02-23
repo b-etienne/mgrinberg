@@ -88,11 +88,6 @@ class Posts(db.Model):
 	datestamp = db.Column(db.DateTime)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.iid'))
 
-	def __init__(self, body, author, datestamp):
-		self.body = body
-		self.user_id = author
-		self.datestamp = datestamp
-
 	def __repr__(self):
 		return('<Post {}>'.format(self.body))
 

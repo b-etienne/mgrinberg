@@ -77,10 +77,10 @@ class TestCase(unittest.TestCase):
 
 		# Posts
 		now = datetime.utcnow()
-		p1 = Posts(body="Post from John", author=u1.iid, datestamp=now+timedelta(1))
-		p2 = Posts(body="Post from Marie", author=u2.iid, datestamp=now+timedelta(2))
-		p3 = Posts(body="Post from David", author=u3.iid, datestamp=now+timedelta(3))
-		p4 = Posts(body="Post from Bob", author=u4.iid, datestamp=now+timedelta(4))
+		p1 = Posts(body="Post from John", author=u1, datestamp=now+timedelta(1))
+		p2 = Posts(body="Post from Marie", author=u2, datestamp=now+timedelta(2))
+		p3 = Posts(body="Post from David", author=u3, datestamp=now+timedelta(3))
+		p4 = Posts(body="Post from Bob", author=u4, datestamp=now+timedelta(4))
 		db.session.add(p1)
 		db.session.add(p2)
 		db.session.add(p3)
@@ -89,32 +89,29 @@ class TestCase(unittest.TestCase):
 
 		# Followers
 		u1.follow(u1).follow(u2).follow(u4)
-		db.session.commit()
-		u2.follow(u2)
-		u2.follow(u3)
-		u3.follow(u3)
-		u3.follow(u4)
+		u2.follow(u2).follow(u3)
+		u3.follow(u3).follow(u4)
 		u4.follow(u4)
 		assert(u1.is_following(u1))
 		assert(u1.is_following(u2))
 		assert(u1.is_following(u4))
 		db.session.commit()
 
-		print(Posts.query.all())
-		print(u1.follows.all())
-		print(u2.follows.all())
-		print(u3.follows.all())
-		print(u4.follows.all())
+		r1 = u1.followed_posts().all()
+		r2 = u2.followed_posts().all()
+		r3 = u3.followed_posts().all()
+		r4 = u4.followed_posts().all()
 
-		# Check the number of followed posts
-		f1 = u1.followed_posts()
-		f2 = u2.followed_posts()
-		f3 = u3.followed_posts()
-		f4 = u4.followed_posts()
-		print(f1.first(), f2, f3, f4)
-		assert(len(f1) == 3)
-		assert(len(f2) == 2)
-		assert(len(f4) == 1)
+		assert(len(r1) == 3)
+		assert(len(r2) == 2)
+		assert(len(r3) == 2)
+		assert(len(r4) == 1)
+		assert(r1 == [p4, p2, p1])
+		assert(r2 == [p3, p2])
+		assert(r3 == [p4, p3])
+		assert(r4 == [p4])
+
+		
 
 
 
