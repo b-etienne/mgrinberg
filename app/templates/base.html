@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python Flask Bucket List App</title>
+ 
+ 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+    <script src="./static/js/jquery-3.1.1.min.js"></script>
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation"><a href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    {% if not g.user.is_authenticated %}
+                    <li role="presentation"><a href="{{ url_for('login') }}">Sign In</a>
+                    </li>
+                    <li role="presentation"><a href="{{ url_for('signup') }}">Sign Up</a>
+                    </li>                  
+                    {% else %}
+                    <li role="presentation"><a href="{{ url_for('userprofile', nickname=g.user.pseudo) }}">My Profile</a>
+                    </li>
+                    <li role="presentation"><a href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <h3 class="text-muted">Python Flask App - {{g.user.pseudo}}</h3>
+        </div>
+
+        {% block content %}{% endblock %}
+ 
+        <footer class="footer">
+            <p>&copy; Company 2015</p>
+        </footer>
+ 
+    </div>
+</body>
+
+<script type="text/javascript">
+    $("li").on('click', function(){
+        $("li").removeClass("active");
+        $(this).addClass("active");
+    });
+</script>
+ 
+</html>

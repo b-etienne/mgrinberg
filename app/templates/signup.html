@@ -1,0 +1,33 @@
+<!-- coding: utf-8 -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>{{title}}</h1>
+    <form action="" method="POST" name="login">
+        {{form.hidden_tag()}}
+        <p>
+            Choose a pseudo : <br>
+            {{ form.name(size=20) }}<br>
+            Email adress : <br>
+            {{ form.mail(size=80) }}<br>
+            {% for error in form.name.errors %}
+                <span style="color : red;">{{error}}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{form.remember}} Remember me
+        </p>
+        <p><input type="submit" value="Sign-in"></p>
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for m in messages %}
+            <li>{{ m }}</li>
+            {% endfor %}
+        </ul    >
+        {% endif %}
+    {% endwith %}
+{% endblock %}
