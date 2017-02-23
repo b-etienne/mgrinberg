@@ -18,8 +18,8 @@ class TestCase(unittest.TestCase):
 
 
 	def tearDown(self):
-		db.session.remove()
-		db.drop_all()
+	    db.session.remove()
+	    db.drop_all()
 
 
 	def test_avatar(self):
