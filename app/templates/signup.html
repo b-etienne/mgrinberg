@@ -4,9 +4,9 @@
 
 {% block content %}
 
-    <h1>{{title}}</h1>
+    <h1>{{ title }}</h1>
     <form action="" method="POST" name="login">
-        {{form.hidden_tag()}}
+        {{ form.hidden_tag() }}
         <p>
             Choose a pseudo : <br>
             {{ form.name(size=20) }}<br>
@@ -17,7 +17,7 @@
             {% endfor %}
         </p>
         <p>
-            {{form.remember}} Remember me
+            {{ form.remember }} Remember me
         </p>
         <p><input type="submit" value="Sign-in"></p>
     </form>

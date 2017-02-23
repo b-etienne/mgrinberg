@@ -88,32 +88,33 @@ class TestCase(unittest.TestCase):
 		db.session.commit()
 
 		# Followers
-		u1 = u1.follow(u1)
-		u1 = u1.follow(u2)
-		u1 = u1.follow(u4)
+		u1.follow(u1).follow(u2).follow(u4)
+		db.session.commit()
 		u2.follow(u2)
-		u2.follow(u4)
+		u2.follow(u3)
 		u3.follow(u3)
 		u3.follow(u4)
 		u4.follow(u4)
-		db.session.add(u1)
-		db.session.add(u2)
-		db.session.add(u3)
-		db.session.add(u4)
+		assert(u1.is_following(u1))
+		assert(u1.is_following(u2))
+		assert(u1.is_following(u4))
 		db.session.commit()
 
 		print(Posts.query.all())
+		print(u1.follows.all())
+		print(u2.follows.all())
+		print(u3.follows.all())
+		print(u4.follows.all())
 
 		# Check the number of followed posts
-		f1 = u1.followed_posts().all()
-		f2 = u2.followed_posts().all()
-		f3 = u3.followed_posts().all()
-		f4 = u4.followed_posts().all()
-		print(f1)
-		assert f1 == [p4, p2, p1]
-		assert f2 == [p4, p2]
-		assert f3 == [p4, p3]
-		assert f4 == [p4]
+		f1 = u1.followed_posts()
+		f2 = u2.followed_posts()
+		f3 = u3.followed_posts()
+		f4 = u4.followed_posts()
+		print(f1.first(), f2, f3, f4)
+		assert(len(f1) == 3)
+		assert(len(f2) == 2)
+		assert(len(f4) == 1)
 
 
 
