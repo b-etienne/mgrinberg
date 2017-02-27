@@ -1,7 +1,24 @@
 
 {% extends "base.html" %}
 {% block content %}
-
+    <form action="" method="POST" name="post">
+        {{ form.hidden_tag() }}
+        <p>Say something :</p>
+        <p>{{ form.post }}</p>
+        <p><input type="submit" value="Post!"></p>
+    </form>
+    {% if posts %}          
+        {% for p in posts.items %}
+            <h4>{{ p.author.pseudo }}</h4>
+            <p>{{ p.body }}</p>
+            
+        {% endfor%}
+        {% if posts.has_prev %}<a href="{{ url_for('index', page=posts.prev_num) }}">Newer</a>{%    else %}Newer{% endif %}
+        {% if posts.has_next %}<a href="{{ url_for('index', page=posts.next_num) }}">Older</a>{% else %}Older{% endif %}
+    {% else %}
+        <h4>No messages to display</h4>
+    {% endif %}
+    
     <div class="col-lg-6">  
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -12,14 +29,8 @@
         </ul>
         {% endif %}
     {% endwith %}
-    {% if posts %}          
-        {% for p in posts %}
-        <h4>{{p.user}}</h4>
-        <p>{{p.message}}</p>
-        {% endfor%}
-    {% else %}
-     	<h4>No messages to display</h4>
-    {% endif %}
+    
+
     
     </div>
 {% endblock %}
