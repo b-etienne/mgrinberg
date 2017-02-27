@@ -82,6 +82,10 @@ class User(db.Model):
 		return(s)
 
 
+	def sorted_posts(self):
+		return(self.posts.order_by(Posts.datestamp.desc())) 
+
+
 class Posts(db.Model):
 	iid = db.Column(db.Integer, primary_key=True)
 	body = db.Column(db.String(140))

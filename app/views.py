@@ -114,14 +114,16 @@ def logout():
 
 
 @app.route('/user/<nickname>')
+@app.route('/user/<nickname>/page/<int:page>')
 @login_required
-def userprofile(nickname):
+def userprofile(nickname, page=1):
     user = User.query.filter_by(pseudo=nickname).first()
     if user is None:
         flash('User {} not found'.format(nickname))
         return(redirect(url_for('index')))
         
     posts = Posts.query.filter_by(author=user).all()
+    posts = user.sorted_posts().paginate(page, POSTS_PER_PAGE, False)
     return(render_template('user.html', user=user, posts=posts))
 
 
