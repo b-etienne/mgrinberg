@@ -30,6 +30,9 @@
 			{% include "post.html" %}
 				
 		{% endfor %}
+		{% if posts.has_prev %}<a href="{{ url_for('userprofile', nickname=user.pseudo, page=posts.prev_num) }}">Newer</a>{%    else %}Newer{% endif %}
+        
+        {% if posts.has_next %}<a href="{{ url_for('userprofile', nickname=user.pseudo, page=posts.next_num) }}">Older</a>{% else %}Older{% endif %}
 	{% else %}
 		
 		<p>No messages to show</p>

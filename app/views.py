@@ -22,10 +22,10 @@ def index(page=1):
     # auth = g.user.is_authenticated
     form = PostForm()
     if form.validate_on_submit():
-    	post = Posts(body=form.post.data, datestamp=datetime.utcnow(), author=g.user)
-    	db.session.add(post)
-    	db.session.commit()
-    	return(redirect(url_for('index')))
+        post = Posts(body=form.post.data, datestamp=datetime.utcnow(), author=g.user)
+        db.session.add(post)
+        db.session.commit()
+        return(redirect(url_for('index')))
     # posts = g.user.followed_posts().all() Ne gère pas la pagination
     posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
     return(render_template('index.html', user=user, posts=posts, form=form))
@@ -44,8 +44,7 @@ def signup():
             flash('This pseudo is already taken')
             return(render_template('signup.html', title='Sign up', form=form))
         user = User(pseudo=pseudo, email=email)
-        db.session.add(user)
-        db.session.commit()		
+        db.session.add(user)	
         db.session.add(user.follow(user))
         db.session.commit()
         login_user(user)
@@ -79,18 +78,18 @@ def login():
 @app.route('/edit', methods=['GET','POST'])
 @login_required
 def edit():
-	form = EditForm()
-	if form.validate_on_submit():
-		g.user.pseudo = form.pseudo.data
-		g.user.about_me = form.about_me.data
-		db.session.add(g.user)
-		db.session.commit()
-		flash('Your changes have been saved')
-		return(redirect(url_for('userprofile', nickname=g.user.pseudo)))
-	else:
-		form.pseudo.data = g.user.pseudo
-		form.about_me.data = g.user.about_me
-		return(render_template('edit.html', form=form))
+    form = EditForm()
+    if form.validate_on_submit():
+        g.user.pseudo = form.pseudo.data
+        g.user.about_me = form.about_me.data
+        db.session.add(g.user)
+        db.session.commit()
+        flash('Your changes have been saved')
+        return(redirect(url_for('userprofile', nickname=g.user.pseudo)))
+    else:
+        form.pseudo.data = g.user.pseudo
+        form.about_me.data = g.user.about_me
+        return(render_template('edit.html', form=form))
 
 
 @lm.user_loader
